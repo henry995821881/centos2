@@ -1,0 +1,513 @@
+一、磁盘与目录的容量
+    df 用于查看系统中所有磁盘的整体使用量
+
+[root@mylinux ~]# df
+Filesystem     1K-blocks    Used Available Use% Mounted on
+/dev/sda3       18244476 1326800  15984252   8% /
+tmpfs             515244       0    515244   0% /dev/shm
+/dev/sda1         194241   70857    113144  39% /boot
+[root@mylinux ~]#
+    格式 ：df [-amhHitT]
+    -a 列出所有的分区，包括虚拟文件分区
+
+[root@mylinux ~]# df -a
+Filesystem     1K-blocks    Used Available Use% Mounted on
+/dev/sda3       18244476 1326800  15984252   8% /
+proc                   0       0         0    - /proc
+sysfs                  0       0         0    - /sys
+devpts                 0       0         0    - /dev/pts
+tmpfs             515244       0    515244   0% /dev/shm
+/dev/sda1         194241   70857    113144  39% /boot
+none                   0       0         0    - /proc/sys/fs/binfmt_misc
+[root@mylinux ~]#
+    -m 以MB的单位进行显示
+
+[root@mylinux ~]# df -m
+Filesystem     1M-blocks  Used Available Use% Mounted on
+/dev/sda3          17817  1296     15610   8% /
+tmpfs                504     0       504   0% /dev/shm
+/dev/sda1            190    70       111  39% /boot
+     -h 以人类可读的方式显示，以MB,GB等单位进行显示
+
+[root@mylinux ~]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3        18G  1.3G   16G   8% /
+tmpfs           504M     0  504M   0% /dev/shm
+/dev/sda1       190M   70M  111M  39% /boot
+[root@mylinux ~]#
+    -H 以1M=1000K来替代1M=1024的进制显示
+
+[root@mylinux ~]# df -H
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3        19G  1.4G   17G   8% /
+tmpfs           528M     0  528M   0% /dev/shm
+/dev/sda1       199M   73M  116M  39% /boot
+[root@mylinux ~]#
+     -i 将inode的信息量显示出来
+
+[root@mylinux ~]# df -i
+Filesystem      Inodes IUsed   IFree IUse% Mounted on
+/dev/sda3      1166880 46549 1120331    4% /
+tmpfs           128811     1  128810    1% /dev/shm
+/dev/sda1        51200    51   51149    1% /boot
+    -t 指定系统类型进行显示
+
+[root@mylinux ~]# df -t ext4
+Filesystem     1K-blocks    Used Available Use% Mounted on
+/dev/sda3       18244476 1326804  15984248   8% /
+/dev/sda1         194241   70857    113144  39% /boot
+[root@mylinux ~]#
+    -T 连同系统类型一同显示出来
+
+[root@mylinux ~]# df -Th
+Filesystem     Type   Size  Used Avail Use% Mounted on
+/dev/sda3      ext4    18G  1.3G   16G   8% /
+tmpfs          tmpfs  504M     0  504M   0% /dev/shm
+/dev/sda1      ext4   190M   70M  111M  39% /boot
+[root@mylinux ~]#
+      特殊用法：将某一目录所在的磁盘以可读的容量进行显示
+
+[root@mylinux ~]# df -h /etc
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3        18G  1.3G   16G   8% /
+
+    
+     du 产看目录或文件的大小
+     格式 ：du [-ahskm] [文件/目录]
+     -a 显示所有文件，目录大小
+
+[root@mylinux ~]# du -a /etc
+116     /etc/gconf/gconf.xml.defaults/%gconf-tree.xml
+120     /etc/gconf/gconf.xml.defaults
+4       /etc/gconf/schemas/system_smb.schemas
+4       /etc/gconf/schemas/desktop_default_applications.schemas
+4       /etc/gconf/schemas/system_dns_sd.schemas
+...............下面省略.............
+     -h 以人类可读的方式显示
+
+[root@mylinux ~]# du -h /etc
+120K    /etc/gconf/gconf.xml.defaults
+184K    /etc/gconf/schemas
+4.0K    /etc/gconf/gconf.xml.mandatory
+12K     /etc/gconf/2
+4.0K    /etc/gconf/gconf.xml.system
+..............下面省略.............
+      -s 显示目录文件大小的总量
+
+[root@mylinux ~]# du -sh /etc
+28M     /etc
+      -k 以KB单位进行显示
+
+[root@mylinux ~]# du -sk /etc
+28624   /etc
+      -m 以MB单位进行显示
+
+[root@mylinux ~]# du -sm /etc
+28      /etc
+
+        
+         “ls -lh”与 "du -h"的比较
+            ls
+
+[root@mylinux ~]# ls -hl /etc
+总用量 1.4M
+-rw-r--r--.  1 root root   44 3月  21 23:30 adjtime
+-rw-r--r--.  1 root root 1.5K 1月  12 2010 aliases
+-rw-r--r--.  1 root root  12K 2月  27 00:16 aliases.db
+drwxr-xr-x.  2 root root 4.0K 2月  28 13:53 alternatives
+-rw-------.  1 root root  541 11月 23 2013 anacrontab
+..................下面省略............
+          du
+
+[root@mylinux ~]# du -h /etc/
+120K    /etc/gconf/gconf.xml.defaults
+184K    /etc/gconf/schemas
+4.0K    /etc/gconf/gconf.xml.mandatory
+12K     /etc/gconf/2
+4.0K    /etc/gconf/gconf.xml.system
+...................下面省略............
+       从上面的例子可以看出用‘ls’会将文件的具体的大小显示出来，而‘du’会以‘4.0K’的单位进行显示，即无论多大，都是4的倍数，不足4K，也以4K进行显示
+
+
+二、磁盘的分区，格式化，挂载
+       fdisk 磁盘分区
+       格式 ： fdisk -l [磁盘设备]
+
+[root@mylinux ~]# fdisk -l                    # 列出所有磁盘设备信息
+Disk /dev/sda: 21.5 GB, 21474836480 bytes     # 磁盘sda的总容量
+255 heads, 63 sectors/track, 2610 cylinders   
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x000cd760                   
+ 
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          26      204800   83  Linux
+Partition 1 does not end on cylinder boundary.
+/dev/sda2              26         287     2097152   82  Linux swap / Solaris
+Partition 2 does not end on cylinder boundary.
+/dev/sda3             287        2611    18668544   83  Linux
+ 
+Disk /dev/sdb: 10.7 GB, 10737418240 bytes     # 磁盘sdb的总容量
+255 heads, 63 sectors/track, 1305 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x00000000
+[root@mylinux ~]#
+    从上面的信息中可以看到磁盘sda的分区已经完成，而磁盘sdb的分区还没有进行分区，那么我们就对磁盘sdb进行分区。
+
+[root@mylinux ~]# fdisk /dev/sdb    # 对磁盘设备sdb进行磁盘操作
+Device contains neither a valid DOS partition table, nor Sun, SGI or OSF disklabel
+Building a new DOS disklabel with disk identifier 0xaf253cdd.
+Changes will remain in memory only, until you decide to write them.
+After that, of course, the previous content won't be recoverable.
+ 
+Warning: invalid flag 0x0000 of partition table 4 will be corrected by w(rite)
+ 
+WARNING: DOS-compatible mode is deprecated. It's strongly recommended to
+         switch off the mode (command 'c') and change display units to
+         sectors (command 'u').
+ 
+Command (m for help):
+     这里提示输入“m”获得帮助信息，那么看一下会有哪些信息
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition                    # 删除一个分区
+   l   list known partition types            # 列出分区类型
+   m   print this menu
+   n   add a new partition                   # 增加一个新的分区
+   o   create a new empty DOS partition table
+   p   print the partition table             # 打印出分区表
+   q   quit without saving changes           # 退出但是不进行保存
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit          # 退出并保存操作
+   x   extra functionality (experts only)
+ 
+Command (m for help):
+      输入“p”查看当前磁盘的分区状态
+
+Command (m for help): p
+ 
+Disk /dev/sdb: 10.7 GB, 10737418240 bytes
+255 heads, 63 sectors/track, 1305 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0xaf253cdd
+ 
+   Device Boot      Start         End      Blocks   Id  System
+ 
+Command (m for help):
+      当前磁盘未进行分区，那么我们就开始分区吧
+
+
+Command (m for help): n                 # 创建一个新的分区
+Command action
+   e   extended                         # 扩展分区
+   p   primary partition (1-4)          # 主分区 （1-4）
+p                                       # 我们先创建立一个主分区输入“p”
+Partition number (1-4): 1               # 分区标号选择“1”
+First cylinder (1-1305, default 1):     # 起始柱面，默认1
+Using default value 1
+Last cylinder, +cylinders or +size{K,M,G} (1-1305, default 1305): +1G
+                             # 结束柱面我们不去指定，而是输入容量，让系统自动分割柱面
+Command (m for help): p                
+ 
+Disk /dev/sdb: 10.7 GB, 10737418240 bytes
+255 heads, 63 sectors/track, 1305 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x57fa9dfa
+ 
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         132     1060258+  83  Linux
+# 1G的分区创建成功，柱面的位置自动结束在132
+ 
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+e                                  # 创建一个扩展分区
+Partition number (1-4): 2
+First cylinder (133-1305, default 133):
+Using default value 133
+Last cylinder, +cylinders or +size{K,M,G} (133-1305, default 1305): 
+Using default value 1305
+# 将剩余分区都分给扩展分区
+Command (m for help): p
+ 
+Disk /dev/sdb: 10.7 GB, 10737418240 bytes
+255 heads, 63 sectors/track, 1305 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x57fa9dfa
+ 
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         132     1060258+  83  Linux
+/dev/sdb2             133        1305     9422122+   5  Extended
+# 扩展分区创建成功
+Command (m for help): n
+Command action
+   l   logical (5 or over)
+   p   primary partition (1-4)
+l                                # 创建一个逻辑分区
+First cylinder (133-786, default 133):
+Using default value 133
+Last cylinder, +cylinders or +size{K,M,G} (133-786, default 786): +2G
+ 
+Command (m for help): p
+ 
+Disk /dev/sdb: 10.7 GB, 10737418240 bytes
+255 heads, 63 sectors/track, 1305 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x57fa9dfa
+ 
+Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         132     1060258+  83  Linux
+/dev/sdb2             133        1305     9422122+   5  Extended
+/dev/sdb5             133         394     2104483+  83  Linux
+# 2G的逻辑分区创建成功
+Command (m for help): w        # 输入“w”退出保存操作
+The partition table has been altered!
+ 
+Calling ioctl() to re-read partition table.
+Syncing disks.
+     现在在查看一下磁盘分区状况，刷新系统命令：parprobe，没有需要yum install -y parted
+
+[root@mylinux ~]# fdisk -l
+ 
+..................上面省略..............
+ 
+Disk /dev/sdb: 10.7 GB, 10737418240 bytes
+255 heads, 63 sectors/track, 1305 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x12c26e3e
+ 
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         132     1060258+  83  Linux
+/dev/sdb2             133        1305     9422122+   5  Extended
+/dev/sdb5             133         394     2104483+  83  Linux
+[root@mylinux ~]#
+# 磁盘sdb以及分区成功了
+
+    
+     上面以及分完区了，下一步开始格式化分区
+     分区命令 mkfs
+     格式 ：mkfs -t [分区类型] [分区名字]
+     例如格式化分区/dev/sdb1
+
+[root@mylinux ~]# mkfs -t ext4 /dev/sdb1
+mke2fs 1.41.12 (17-May-2010)
+文件系统标签=               
+操作系统:Linux
+块大小=4096 (log=2)
+分块大小=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+66384 inodes, 265064 blocks
+13253 blocks (5.00%) reserved for the super user
+# 预留5%块给超级用户
+第一个数据块=0
+Maximum filesystem blocks=272629760
+9 block groups
+32768 blocks per group, 32768 fragments per group
+7376 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+ 
+正在写入inode表: 完成
+Creating journal (8192 blocks): 完成
+Writing superblocks and filesystem accounting information: 完成
+ 
+This filesystem will be automatically checked every 30 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+    还可以这样分区，效果是一样的
+    命令 mkfs.ext4  
+    选项 ：
+    -L 指定分区标签
+    -b 指定块大小
+    -i 指定多少容量给与一个inode
+
+
+[root@mylinux ~]# mkfs.ext4 /dev/sdb1
+mke2fs 1.41.12 (17-May-2010)
+文件系统标签=
+操作系统:Linux
+块大小=4096 (log=2)
+分块大小=4096 (log=2)
+Stride=0 blocks, Stripe width=0 blocks
+66384 inodes, 265064 blocks
+13253 blocks (5.00%) reserved for the super user
+第一个数据块=0
+Maximum filesystem blocks=272629760
+9 block groups
+32768 blocks per group, 32768 fragments per group
+7376 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376
+ 
+正在写入inode表: 完成
+Creating journal (8192 blocks): 完成
+Writing superblocks and filesystem accounting information: 完成
+ 
+This filesystem will be automatically checked every 37 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+[root@mylinux ~]#
+        
+      
+     mke2fs 指定分区信息
+     选项 ：
+     -L 指定分区标签
+     -b 指定块大小
+     -i 指定多少容量给与一个inode
+
+[root@mylinux ~]# mke2fs -L "mylinux" -b 2048 /dev/sdb1
+mke2fs 1.41.12 (17-May-2010)
+文件系统标签=mylinux                           # 指定的标签叫“mylinux”
+操作系统:Linux
+块大小=2048 (log=1)                            # 块大小指定为“2048”
+分块大小=2048 (log=1)
+Stride=0 blocks, Stripe width=0 blocks
+66528 inodes, 530128 blocks
+26506 blocks (5.00%) reserved for the super user
+第一个数据块=0
+Maximum filesystem blocks=537919488
+33 block groups
+16384 blocks per group, 16384 fragments per group
+2016 inodes per group
+Superblock backups stored on blocks:
+        16384, 49152, 81920, 114688, 147456, 409600, 442368
+ 
+正在写入inode表: 完成
+Writing superblocks and filesystem accounting information: 完成
+ 
+This filesystem will be automatically checked every 32 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+
+
+三、磁盘分区的挂载与卸载
+    命令 mount  
+
+[root@mylinux ~]# mount          # 直接输入命令，显示各个分区格式，与状态“读写”
+/dev/sda3 on / type ext4 (rw)
+proc on /proc type proc (rw)
+sysfs on /sys type sysfs (rw)
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+tmpfs on /dev/shm type tmpfs (rw)
+/dev/sda1 on /boot type ext4 (rw)
+none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
+[root@mylinux ~]#
+    挂载分区格式
+    mount  -t [格式] [挂载的分区] [挂载的目录]
+    例如 挂载之前创建的分区"/dev/sdb1"
+
+[root@mylinux ~]# mkdir /linuxdir
+[root@mylinux ~]# mount -t ext4 /dev/sdb1 /linuxdir
+[root@mylinux ~]# df
+Filesystem     1K-blocks    Used Available Use% Mounted on
+/dev/sda3       18244476 1420560  15890492   9% /
+tmpfs             515244       0    515244   0% /dev/shm
+/dev/sda1         194241   70857    113144  39% /boot
+/dev/sdb1        1010780    1304    956464   1% /linuxdir
+分区挂载成功
+[root@mylinux ~]# cd /linuxdir/
+[root@mylinux linuxdir]# ls
+lost+found
+[root@mylinux linuxdir]#
+     mount的选项
+     -a 挂载所有在/etc/fstab中可挂载的
+     -l 连同Lable一起显示挂载信息
+     -t 按分区类型进行挂载，也可以不加，让系统自动去匹配挂载
+     -L 按磁盘Lable进行挂载分区
+     -o 后面追加选项
+        ro, rw:       挂载文件系统成为只读(ro) 或可擦写(rw)
+        async, sync:  此文件系统是否使用同步写入 (sync) 或异步 (async) 的
+                      内存机制，请参考文件系统运行方式。默认为 async。
+        auto, noauto: 允许此 partition 被以 mount -a 自动挂载(auto)
+        dev, nodev:   是否允许此 partition 上，可创建装置文件？ dev 为可允许
+        suid, nosuid: 是否允许此 partition 含有 suid/sgid 的文件格式？
+        exec, noexec: 是否允许此 partition 上拥有可运行 binary 文件？
+        user, nouser: 是否允许此 partition 让任何使用者运行 mount ？一般来说，
+                      mount 仅有 root 可以进行，但下达 user 参数，则可让
+                      一般 user 也能够对此 partition 进行 mount 。
+        defaults:     默认值为：rw, suid, dev, exec, auto, nouser, and async
+        remount:      重新挂载，这在系统出错，或重新升级参数时，很有用！
+
+[root@mylinux ~]# mount -t ext4 -o rw,nosuid,nouser /dev/sdb1 /linux/
+[root@mylinux ~]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda3        18G  5.0G   12G  30% /
+tmpfs           504M     0  504M   0% /dev/shm
+/dev/sda1       190M   67M  114M  37% /boot
+/dev/sdb1       988M  1.3M  935M   1% /linux       # 成功挂载
+[root@mylinux ~]# mount -l
+/dev/sda3 on / type ext4 (rw)
+proc on /proc type proc (rw)
+sysfs on /sys type sysfs (rw)
+devpts on /dev/pts type devpts (rw,gid=5,mode=620)
+tmpfs on /dev/shm type tmpfs (rw)
+/dev/sda1 on /boot type ext4 (rw)
+none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
+/dev/sdb1 on /linux type ext4 (rw,nosuid) [linux]   # 挂载参数为“rw”“nosuid”
+[root@mylinux ~]#
+    目前是挂载成功了，但是计算机重启后，挂载的分区就失效了，所有就需要更改配置，使其可以开机自动挂载分区。
+    ①将挂载命令写入/etc/rc.d/rc.local里
+    ②编辑/etc/fstab,按照指定格式，编辑格式
+    写入/etc/rc.d/rc.local
+
+[root@mylinux ~]# vim /etc/rc.d/rc.local
+...............上面省略.............
+# want to do the full Sys V style init stuff.
+ 
+touch /var/lock/subsys/local
+mount -t ext4 -o rw,nosuid,nouser /dev/sdb1 /linux/
+~
+~
+     编辑/etc/fstab
+
+[root@mylinux ~]# vim /etc/fstab
+# /etc/fstab
+# Created by anaconda on Mon Mar  2 17:48:02 2015
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+UUID=8d9b05d4-a293-46e4-80a0-238ef79e737b /                       ext4    defaults        1 1
+UUID=c8c39b35-d44a-4e86-9c26-05d6774ad69f /boot                   ext4    defaults        1 2
+UUID=50c1a1b2-18d7-46c9-92a7-9490950b011e swap                    swap    defaults        0 0
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+/dev/sdb1               /linux                  ext4    rw,nouser,suid  0 0
+# 最后一行可以看到
+      格式 ：
+          ①要挂载的分区设备名   
+          ②挂载目录  
+          ③分区类型  
+          ④分区参数 
+          ⑤第一个“0”是否进行dump，备份，“0”代表不进行dump，“1”代表每天都进行dump，“2”代表不定期dump  
+          ⑥第二个“0”代表是否进行fsck检测分区，“0”代表不进行检测，根系统设置为“1”，其他文件系统设置为“2”
+
+
+    挂载除了可以用/dev/sdb1 这样的分区名去挂载，还可以用Lable标签进行挂载，还有就是UUID进行挂载，UUID用blkid命令来查询
+
+[root@mylinux ~]# blkid
+/dev/sda1: UUID="c8c39b35-d44a-4e86-9c26-05d6774ad69f" TYPE="ext4"
+/dev/sda2: UUID="50c1a1b2-18d7-46c9-92a7-9490950b011e" TYPE="swap"
+/dev/sda3: UUID="8d9b05d4-a293-46e4-80a0-238ef79e737b" TYPE="ext4"
+/dev/sdb1: LABEL="linux" UUID="f6363cfd-912a-4377-99e2-1368dfb3b3d7" TYPE="ext4"
+[root@mylinux ~]#
